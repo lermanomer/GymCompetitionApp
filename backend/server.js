@@ -361,6 +361,51 @@ app.delete("/activities/:id", (req, res) => {
         res.status(500).json({error: "Error deleting activity"});
     }
 });
+// =====================================================
+// AUTH ROUTES
+// =====================================================
+
+// POST - Register new user
+app.post("/register", async (req, res) => {
+    try{
+        let collection = db.collection("Users");
+        let existing = await collection.findOne({username: req.body.username});
+        
+        if(existing){
+            res.status(400).json({error: "Username already exists"});
+        } else {
+            let newUser = {
+                username: req.body.username,
+                password: req.body.password,
+                isAdmin: false
+            };
+            await collection.insertOne(newUser);
+            res.json({message: "User created successfully", user: newUser});
+        }
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error registering user"});
+    }
+});
+
+// POST - Login user
+app.post("/login", async (req, res) => {
+    try{
+        let collection = db.collection("Users");
+        let result = await collection.findOne({username: req.body.username, password: req.body.password});
+        
+        if(result){
+            res.json({message: "Login successful", user: result});
+        } else {
+            res.status(401).json({error: "Invalid username or password"});
+        }
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error logging in"});
+    }
+});
 
 // =====================================================
 // DATABASE CONNECTION
