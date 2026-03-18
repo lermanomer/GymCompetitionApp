@@ -362,6 +362,274 @@ app.delete("/activities/:id", (req, res) => {
     }
 });
 // =====================================================
+// COMMUNITIES ROUTES
+// =====================================================
+
+// GET all communities
+app.get("/communities", async (req, res) => {
+    try{
+        let collection = db.collection("Communities");
+        let result = await collection.find().toArray();
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching communities"});
+    }
+});
+
+// GET community by ID
+app.get("/communities/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Communities");
+        let result = await collection.findOne({"_id": new ObjectId(req.params.id)});
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching community"});
+    }
+});
+
+// POST - Create new community (admin only)
+app.post("/communities", async (req, res) => {
+    try{
+        let collection = db.collection("Communities");
+        let newCommunity = {
+            name: req.body.name,
+            description: req.body.description,
+            createdBy: new ObjectId(req.body.createdBy),
+            members: []
+        };
+        await collection.insertOne(newCommunity);
+        res.json({message: "Community created", community: newCommunity});
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error creating community"});
+    }
+});
+
+// POST - Join community
+app.post("/communities/:id/join", async (req, res) => {
+    try{
+        let collection = db.collection("Communities");
+        let userId = new ObjectId(req.body.userId);
+        let communityId = new ObjectId(req.params.id);
+        
+        let result = await collection.updateOne(
+            {"_id": communityId},
+            {$addToSet: {members: userId}}
+        );
+        res.json({message: "Joined community", result: result});
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error joining community"});
+    }
+});
+
+// PUT - Update community
+app.put("/communities/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Communities");
+        let id = new ObjectId(req.params.id);
+        let result = await collection.updateOne(
+            {"_id": id},
+            {$set: req.body}
+        );
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error updating community"});
+    }
+});
+
+// DELETE - Remove community
+app.delete("/communities/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Communities");
+        let id = new ObjectId(req.params.id);
+        let result = await collection.deleteOne({"_id": id});
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error deleting community"});
+    }
+});
+// =====================================================
+// GOALS ROUTES
+// =====================================================
+
+// GET all goals
+app.get("/goals", async (req, res) => {
+    try{
+        let collection = db.collection("Goals");
+        let result = await collection.find().toArray();
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching goals"});
+    }
+});
+
+// GET goals by community
+app.get("/goals/community/:communityId", async (req, res) => {
+    try{
+        let collection = db.collection("Goals");
+        let result = await collection.find({"communityId": new ObjectId(req.params.communityId)}).toArray();
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching community goals"});
+    }
+});
+
+// GET goal by ID
+app.get("/goals/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Goals");
+        let result = await collection.findOne({"_id": new ObjectId(req.params.id)});
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching goal"});
+    }
+});
+
+// POST - Create new goal (admin only)
+app.post("/goals", async (req, res) => {
+    try{
+        let collection = db.collection("Goals");
+        let newGoal = {
+            communityId: new ObjectId(req.body.communityId),
+            name: req.body.name,
+            description: req.body.description,
+            type: req.body.type, // "yes_no" or "numeric"
+            points: req.body.points
+        };
+        await collection.insertOne(newGoal);
+        res.json({message: "Goal created", goal: newGoal});
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error creating goal"});
+    }
+});
+
+// PUT - Update goal
+app.put("/goals/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Goals");
+        let id = new ObjectId(req.params.id);
+        let result = await collection.updateOne(
+            {"_id": id},
+            {$set: req.body}
+        );
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error updating goal"});
+    }
+});
+
+// DELETE - Remove goal
+app.delete("/goals/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Goals");
+        let id = new ObjectId(req.params.id);
+        let result = await collection.deleteOne({"_id": id});
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error deleting goal"});
+    }
+});
+// =====================================================
+// ACTIVITIES ROUTES (Log progress)
+// =====================================================
+
+// GET all activities
+app.get("/activities", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.find().toArray();
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching activities"});
+    }
+});
+
+// GET activities by user
+app.get("/activities/user/:userId", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.find({"userId": new ObjectId(req.params.userId)}).toArray();
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching user activities"});
+    }
+});
+
+// GET activities by community
+app.get("/activities/community/:communityId", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.find({"communityId": new ObjectId(req.params.communityId)}).toArray();
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching community activities"});
+    }
+});
+
+// POST - Log activity
+app.post("/activities", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let newActivity = {
+            userId: new ObjectId(req.body.userId),
+            communityId: new ObjectId(req.body.communityId),
+            goalId: new ObjectId(req.body.goalId),
+            value: req.body.value, // true/false for yes_no, number for numeric
+            date: new Date(),
+            points: req.body.points
+        };
+        await collection.insertOne(newActivity);
+        res.json({message: "Activity logged", activity: newActivity});
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error logging activity"});
+    }
+});
+
+// DELETE - Remove activity
+app.delete("/activities/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let id = new ObjectId(req.params.id);
+        let result = await collection.deleteOne({"_id": id});
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error deleting activity"});
+    }
+});
+// =====================================================
 // AUTH ROUTES
 // =====================================================
 
@@ -406,7 +674,80 @@ app.post("/login", async (req, res) => {
         res.status(500).json({error: "Error logging in"});
     }
 });
+// =====================================================
+// SEED DATA (Create sample communities and goals)
+// =====================================================
 
+async function seedData(db) {
+    try {
+        // Check if communities already exist
+        let communitiesCollection = db.collection("Communities");
+        let count = await communitiesCollection.countDocuments();
+        
+        if (count === 0) {
+            // Create sample communities
+            let communities = await communitiesCollection.insertMany([
+                {
+                    name: "Gym",
+                    description: "Fitness and workout competition",
+                    createdBy: new ObjectId(),
+                    members: []
+                },
+                {
+                    name: "Gaming",
+                    description: "Video game competition",
+                    createdBy: new ObjectId(),
+                    members: []
+                },
+                {
+                    name: "Study",
+                    description: "Academic goals and learning",
+                    createdBy: new ObjectId(),
+                    members: []
+                }
+            ]);
+
+            console.log("Communities created:", communities.insertedIds);
+
+            // Create sample goals for each community
+            let goalsCollection = db.collection("Goals");
+            await goalsCollection.insertMany([
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "Workout",
+                    description: "Complete a workout session",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "Run",
+                    description: "Go for a run",
+                    type: "numeric",
+                    points: 0.5
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "Win Match",
+                    description: "Win a game match",
+                    type: "yes_no",
+                    points: 2
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Study Hours",
+                    description: "Hours spent studying",
+                    type: "numeric",
+                    points: 1
+                }
+            ]);
+
+            console.log("Goals created!");
+        }
+    } catch (e) {
+        console.log("Error seeding data:", e);
+    }
+}
 // =====================================================
 // DATABASE CONNECTION
 // =====================================================
@@ -419,6 +760,9 @@ async function connectDB(){
         await client.connect();
         db = client.db("CommunityCompetition");
         console.log("Connected to MongoDB!");
+        
+        // Seed sample data
+        await seedData(db);
     }
     catch(error){
         console.log(error);

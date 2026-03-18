@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+const API_URL = import.meta.env.VITE_API_URL;
 function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -15,7 +15,7 @@ function Login({ onLoginSuccess }) {
     };
 
     try {
-      const response = await fetch('http://192.168.1.90:8080/login', {
+      const response = await fetch(`${API_URL}/login`, {
         method: 'POST',
         body: JSON.stringify(loginData),
         headers: {
@@ -47,7 +47,7 @@ function Login({ onLoginSuccess }) {
     };
 
     try {
-      const response = await fetch('http://192.168.1.90:8080/register', {
+      const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         body: JSON.stringify(registerData),
         headers: {
