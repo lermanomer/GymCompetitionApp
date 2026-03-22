@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import GoalsAndActivities from './GoalsAndActivities';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -7,6 +8,7 @@ function Communities({ user }) {
   const [userCommunities, setUserCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
+  const [expandedCommunityId, setExpandedCommunityId] = useState(null);
 
   // Fetch all communities and user's communities on load
   useEffect(() => {
@@ -76,13 +78,25 @@ function Communities({ user }) {
         ) : (
           <div>
             {userCommunities.map((comm) => (
-              <div key={comm._id} style={{border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f9f9f9'}}>
-                <h4>{comm.name}</h4>
-                <p>{comm.description}</p>
-                <p><strong>Members:</strong> {comm.members.length}</p>
-                <button style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}>
-                  View Goals
-                </button>
+              <div key={comm._id}>
+                <div style={{border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f9f9f9'}}>
+                  <h4>{comm.name}</h4>
+                  <p>{comm.description}</p>
+                  <p><strong>Members:</strong> {comm.members.length}</p>
+                  <button 
+                    onClick={() => setExpandedCommunityId(expandedCommunityId === comm._id ? null : comm._id)}
+                    style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
+                  >
+                    {expandedCommunityId === comm._id ? 'Hide Goals' : 'View Goals'}
+                  </button>
+                </div>
+
+                {/* EXPANDED GOALS SECTION */}
+                {expandedCommunityId === comm._id && (
+                  <div style={{padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '5px', marginBottom: '20px', marginLeft: '10px', borderLeft: '4px solid #333'}}>
+                    <GoalsAndActivities user={user} communityId={comm._id} communityName={comm.name} />
+                  </div>
+                )}
               </div>
             ))}
           </div>

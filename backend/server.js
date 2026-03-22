@@ -680,12 +680,10 @@ app.post("/login", async (req, res) => {
 
 async function seedData(db) {
     try {
-        // Check if communities already exist
         let communitiesCollection = db.collection("Communities");
         let count = await communitiesCollection.countDocuments();
         
         if (count === 0) {
-            // Create sample communities
             let communities = await communitiesCollection.insertMany([
                 {
                     name: "Gym",
@@ -709,36 +707,115 @@ async function seedData(db) {
 
             console.log("Communities created:", communities.insertedIds);
 
-            // Create sample goals for each community
             let goalsCollection = db.collection("Goals");
             await goalsCollection.insertMany([
+                // GYM GOALS
                 {
                     communityId: communities.insertedIds[0],
-                    name: "Workout",
-                    description: "Complete a workout session",
-                    type: "yes_no",
-                    points: 1
-                },
-                {
-                    communityId: communities.insertedIds[0],
-                    name: "Run",
-                    description: "Go for a run",
+                    name: "Weight Loss",
+                    description: "Log pounds lost",
                     type: "numeric",
                     points: 0.5
                 },
                 {
+                    communityId: communities.insertedIds[0],
+                    name: "2 Mile Run",
+                    description: "Complete a 2 mile run",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "Weight Lifting",
+                    description: "Complete a weight lifting session",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "30 Minute Stairmaster/Treadmill",
+                    description: "Complete 30 minutes on stairmaster or treadmill",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "10k Steps",
+                    description: "Log 10,000 steps completed",
+                    type: "yes_no",
+                    points: 1
+                },
+                // GAMING GOALS
+                {
                     communityId: communities.insertedIds[1],
-                    name: "Win Match",
-                    description: "Win a game match",
+                    name: "Game Session",
+                    description: "Complete a gaming session",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "New Game Started",
+                    description: "Start a new game",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "MVP in a Game",
+                    description: "Achieve MVP in a game match",
                     type: "yes_no",
                     points: 2
                 },
                 {
-                    communityId: communities.insertedIds[2],
-                    name: "Study Hours",
-                    description: "Hours spent studying",
+                    communityId: communities.insertedIds[1],
+                    name: "Complete Campaign",
+                    description: "Complete a game campaign",
+                    type: "yes_no",
+                    points: 5
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "Hours Played",
+                    description: "Hours spent gaming",
                     type: "numeric",
+                    points: 0.5
+                },
+                // STUDY GOALS
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "1 Hour Study Sesh",
+                    description: "Complete a 1 hour study session",
+                    type: "yes_no",
                     points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Practice Quiz",
+                    description: "Complete a practice quiz",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Chapters Completed",
+                    description: "Complete reading assigned chapters",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Podcast/Video Lesson",
+                    description: "Watch educational podcast or video",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Assignments Completed",
+                    description: "Complete an assignment",
+                    type: "yes_no",
+                    points: 3
                 }
             ]);
 
@@ -748,6 +825,7 @@ async function seedData(db) {
         console.log("Error seeding data:", e);
     }
 }
+
 // =====================================================
 // DATABASE CONNECTION
 // =====================================================
