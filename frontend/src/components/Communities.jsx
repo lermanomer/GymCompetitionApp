@@ -78,25 +78,37 @@ function Communities({ user }) {
         ) : (
           <div>
             {userCommunities.map((comm) => (
-              <div key={comm._id}>
+              <div key={comm._id} id={`community-${comm._id}`}>
                 <div style={{border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f9f9f9'}}>
                   <h4>{comm.name}</h4>
                   <p>{comm.description}</p>
                   <p><strong>Members:</strong> {comm.members.length}</p>
-                  <button 
-                    onClick={() => setExpandedCommunityId(expandedCommunityId === comm._id ? null : comm._id)}
-                    style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
-                  >
-                    {expandedCommunityId === comm._id ? 'Hide Goals' : 'View Goals'}
-                  </button>
+         <button 
+  onClick={() => {
+    setExpandedCommunityId(expandedCommunityId === comm._id ? null : comm._id);
+    if (expandedCommunityId !== comm._id) {
+      setTimeout(() => {
+        document.getElementById(`community-${comm._id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }}
+  style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
+>
+  {expandedCommunityId === comm._id ? 'Hide Goals' : 'View Goals'}
+</button>
                 </div>
 
-                {/* EXPANDED GOALS SECTION */}
-                {expandedCommunityId === comm._id && (
-                  <div style={{padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '5px', marginBottom: '20px', marginLeft: '10px', borderLeft: '4px solid #333'}}>
-                    <GoalsAndActivities user={user} communityId={comm._id} communityName={comm.name} />
-                  </div>
-                )}
+               {expandedCommunityId === comm._id && (
+  <div style={{padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '5px', marginBottom: '20px', marginLeft: '10px', borderLeft: '4px solid #333', scrollMarginTop: '100px'}}>
+    <GoalsAndActivities user={user} communityId={comm._id} communityName={comm.name} />
+    <button 
+      onClick={() => setExpandedCommunityId(null)}
+      style={{padding: '8px 15px', marginTop: '15px', cursor: 'pointer', backgroundColor: 'salmon', width: '100%'}}
+    >
+      Hide Goals
+    </button>
+  </div>
+)}
               </div>
             ))}
           </div>

@@ -108,6 +108,7 @@ function GoalsAndActivities({ user, communityId, communityName }) {
                     <input
                       type="number"
                       placeholder="Enter value"
+                      autoFocus={false}
                       value={selectedGoalId === goal._id ? inputValue : ''}
                       onChange={(e) => {
                         setSelectedGoalId(goal._id);
