@@ -675,6 +675,81 @@ app.post("/login", async (req, res) => {
     }
 });
 // =====================================================
+// LEADERBOARD ROUTES
+// =====================================================
+
+// GET leaderboard for a specific community (ranked by total points)
+app.get("/leaderboard/:communityId", async (req, res) => {
+    try {
+        let collection = db.collection("Activities");
+        let communityId = new ObjectId(req.params.communityId);
+
+        let leaderboard = await collection.aggregate([
+            { $match: { communityId: communityId } },
+            { $group: {
+                _id: "$userId",
+                totalPoints: { $sum: "$points" },
+                totalActivities: { $sum: 1 }
+            }},
+            { $sort: { totalPoints: -1 } },
+            { $lookup: {
+                from: "Users",
+                localField: "_id",
+                foreignField: "_id",
+                as: "user"
+            }},
+            { $unwind: "$user" },
+            { $project: {
+                _id: 0,
+                userId: "$_id",
+                username: "$user.username",
+                totalPoints: 1,
+                totalActivities: 1
+            }}
+        ]).toArray();
+
+        res.json(leaderboard);
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Error fetching leaderboard" });
+    }
+});
+
+// GET overall leaderboard across ALL communities
+app.get("/leaderboard", async (req, res) => {
+    try {
+        let collection = db.collection("Activities");
+
+        let leaderboard = await collection.aggregate([
+            { $group: {
+                _id: "$userId",
+                totalPoints: { $sum: "$points" },
+                totalActivities: { $sum: 1 }
+            }},
+            { $sort: { totalPoints: -1 } },
+            { $lookup: {
+                from: "Users",
+                localField: "_id",
+                foreignField: "_id",
+                as: "user"
+            }},
+            { $unwind: "$user" },
+            { $project: {
+                _id: 0,
+                userId: "$_id",
+                username: "$user.username",
+                totalPoints: 1,
+                totalActivities: 1
+            }}
+        ]).toArray();
+
+        res.json(leaderboard);
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Error fetching leaderboard" });
+    }
+});
+// =====================================================
 // SEED DATA (Create sample communities and goals)
 // =====================================================
 
