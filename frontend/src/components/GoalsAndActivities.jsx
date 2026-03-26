@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = 'http://192.168.1.90:8080';
+const API_URL = 'http://localhost:8080';
 
 function GoalsAndActivities({ user, communityId, communityName }) {
   const [goals, setGoals] = useState([]);
