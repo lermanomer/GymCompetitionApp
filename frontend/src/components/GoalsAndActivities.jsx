@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = 'http://192.168.1.90:8080';
 
 function GoalsAndActivities({ user, communityId, communityName }) {
   const [goals, setGoals] = useState([]);
@@ -19,8 +19,8 @@ function GoalsAndActivities({ user, communityId, communityName }) {
       let goalsResponse = await fetch(`${API_URL}/goals/community/${communityId}`);
       let goalsData = await goalsResponse.json();
       setGoals(goalsData);
-
-      let activitiesResponse = await fetch(`${API_URL}/activities/user/${user._id}/community/${communityId}`);
+      
+      let activitiesResponse = await fetch(`${API_URL}/activities/user/${user._id}`);
       let activitiesData = await activitiesResponse.json();
       setActivities(activitiesData);
       
