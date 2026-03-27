@@ -23,8 +23,7 @@ function GoalsAndActivities({ user, communityId, communityName }) {
       // Fetch activities and filter to only this community
       let activitiesResponse = await fetch(`${API_URL}/activities/user/${user._id}`);
       let activitiesData = await activitiesResponse.json();
-      let filtered = activitiesData.filter(a => a.communityId === communityId);
-      setActivities(filtered);
+      let filtered = activitiesData.filter(a => String(a.communityId) === String(communityId)); setActivities(filtered);
 
       setLoading(false);
     }
