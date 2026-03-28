@@ -573,7 +573,7 @@ app.get("/activities", async (req, res) => {
 app.get("/activities/user/:userId", async (req, res) => {
     try{
         let collection = db.collection("Activities");
-        let result = await collection.find({"userId": new ObjectId(req.params.userId)}).toArray();
+        let result = await collection.find({"userId": req.params.userId}).toArray();
         res.json(result);
     }
     catch(e){
