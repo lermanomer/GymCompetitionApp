@@ -20,14 +20,20 @@ function GoalsAndActivities({ user, communityId, communityName }) {
       let goalsData = await goalsResponse.json();
       setGoals(goalsData);
 
-      // Fetch activities and filter to only this community
+      console.log("user._id:", user._id);
+      console.log("communityId:", communityId);
+
       let activitiesResponse = await fetch(`${API_URL}/activities/user/${user._id}`);
       let activitiesData = await activitiesResponse.json();
-      let filtered = activitiesData.filter(a => {
-        let actCommunityId = a.communityId?.$oid || a.communityId;
-        let propCommunityId = communityId?.$oid || communityId;
-        return String(actCommunityId) === String(propCommunityId);
-      });
+
+      console.log("activities returned:", activitiesData.length);
+      console.log("first activity:", activitiesData[0]);
+
+      let filtered = activitiesData.filter(a => String(a.communityId) === String(communityId));
+      
+      console.log("filtered activities:", filtered.length);
+
+      setActivities(filtered);
       setLoading(false);
     }
     catch (error) {
@@ -80,13 +86,11 @@ function GoalsAndActivities({ user, communityId, communityName }) {
     }
   };
 
-  // Helper: get goal name from goalId
   const getGoalName = (goalId) => {
     let goal = goals.find(g => g._id === goalId);
     return goal ? goal.name : goalId;
   };
 
-  // Calculate total points for this community
   const totalPoints = activities.reduce((sum, a) => sum + (a.points || 0), 0);
 
   if (loading) return <div>Loading...</div>;
@@ -95,7 +99,6 @@ function GoalsAndActivities({ user, communityId, communityName }) {
     <div style={{padding: '20px'}}>
       <h2>{communityName} - Goals & Activities</h2>
 
-      {/* Total Points Banner */}
       <div style={{
         backgroundColor: '#1A1A2E', color: 'white',
         padding: '15px 20px', borderRadius: '8px',
@@ -108,7 +111,6 @@ function GoalsAndActivities({ user, communityId, communityName }) {
         </span>
       </div>
 
-      {/* Goals Section */}
       <div style={{marginBottom: '40px'}}>
         <h3>Goals ({goals.length})</h3>
         {goals.length === 0 ? (
@@ -158,7 +160,6 @@ function GoalsAndActivities({ user, communityId, communityName }) {
         )}
       </div>
 
-      {/* Activities Section */}
       <div>
         <h3>Your Activities ({activities.length})</h3>
         {activities.length === 0 ? (
