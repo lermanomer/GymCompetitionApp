@@ -14,16 +14,7 @@ function App() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        backgroundColor: '#f4f7fb',
-      }}
-    >
+    <div>
       {loggedInUser ? (
         <Dashboard user={loggedInUser} onLogout={handleLogout} />
       ) : (

@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
-import GoalsAndActivities from './GoalsAndActivities';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-function Communities({ user }) {
+function Communities({ user, onSelectCommunity }) {
   const [communities, setCommunities] = useState([]);
   const [userCommunities, setUserCommunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
-  const [expandedCommunityId, setExpandedCommunityId] = useState(null);
 
-  // Fetch all communities and user's communities on load
   useEffect(() => {
     fetchCommunities();
   }, []);
@@ -21,7 +18,6 @@ function Communities({ user }) {
       let data = await response.json();
       setCommunities(data);
       
-      // Filter user's communities
       let userComms = data.filter(comm => 
         comm.members.includes(user._id)
       );
@@ -48,7 +44,7 @@ function Communities({ user }) {
 
       if (response.ok) {
         setMessage("Joined community!");
-        fetchCommunities(); // Refresh list
+        fetchCommunities();
       } else {
         setMessage("Error joining community");
       }
@@ -61,7 +57,6 @@ function Communities({ user }) {
 
   if (loading) return <div>Loading communities...</div>;
 
-  // Communities user is NOT in
   const availableCommunities = communities.filter(comm => 
     !comm.members.includes(user._id)
   );
@@ -78,37 +73,22 @@ function Communities({ user }) {
         ) : (
           <div>
             {userCommunities.map((comm) => (
-              <div key={comm._id} id={`community-${comm._id}`}>
-                <div style={{border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f9f9f9'}}>
-                  <h4>{comm.name}</h4>
-                  <p>{comm.description}</p>
-                  <p><strong>Members:</strong> {comm.members.length}</p>
-         <button 
-  onClick={() => {
-    setExpandedCommunityId(expandedCommunityId === comm._id ? null : comm._id);
-    if (expandedCommunityId !== comm._id) {
-      setTimeout(() => {
-        document.getElementById(`community-${comm._id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
-    }
-  }}
-  style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
->
-  {expandedCommunityId === comm._id ? 'Hide Goals' : 'View Goals'}
-</button>
-                </div>
-
-               {expandedCommunityId === comm._id && (
-  <div style={{padding: '20px', backgroundColor: '#f0f0f0', borderRadius: '5px', marginBottom: '20px', marginLeft: '10px', borderLeft: '4px solid #333', scrollMarginTop: '100px'}}>
-    <GoalsAndActivities user={user} communityId={comm._id} communityName={comm.name} />
-    <button 
-      onClick={() => setExpandedCommunityId(null)}
-      style={{padding: '8px 15px', marginTop: '15px', cursor: 'pointer', backgroundColor: 'salmon', width: '100%'}}
-    >
-      Hide Goals
-    </button>
-  </div>
-)}
+              <div key={comm._id} style={{border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f9f9f9'}}>
+                <h4>{comm.name}</h4>
+                <p>{comm.description}</p>
+                <p><strong>Members:</strong> {comm.members.length}</p>
+                <button 
+                  onClick={() => onSelectCommunity(comm)}
+                  style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen', marginRight: '10px'}}
+                >
+                  View Community
+                </button>
+                <button 
+                  onClick={() => handleJoinCommunity(comm._id)}
+                  style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightcoral'}}
+                >
+                  Leave Community
+                </button>
               </div>
             ))}
           </div>

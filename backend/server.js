@@ -278,6 +278,35 @@ app.get("/activities", async (req, res) => {
     }
 });
 
+// GET activity by ID (must be before :userId routes)
+app.get("/activities/:id", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.findOne({"_id": new ObjectId(req.params.id)});
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching activity"});
+    }
+});
+
+// GET activities for user in specific community (MUST be before /activities/user/:userId)
+app.get("/activities/user/:userId/community/:communityId", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.find({
+            userId: new ObjectId(req.params.userId),
+            communityId: new ObjectId(req.params.communityId)
+        }).toArray();
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching user community activities"});
+    }
+});
+
 // GET activities by user ID
 app.get("/activities/user/:userId", async (req, res) => {
     try{
@@ -304,24 +333,18 @@ app.get("/activities/community/:communityId", async (req, res) => {
     }
 });
 
-// GET activity by ID
-app.get("/activities/:id", async (req, res) => {
-    try{
-        let collection = db.collection("Activities");
-        let result = await collection.findOne({"_id": new ObjectId(req.params.id)});
-        res.json(result);
-    }
-    catch(e){
-        console.log(e);
-        res.status(500).json({error: "Error fetching activity"});
-    }
-});
-
 // POST - Create new activity
-app.post("/activities", (req, res) => {
+app.post("/activities", async (req, res) => {
     try{
         let collection = db.collection("Activities");
-        let result = collection.insertOne(req.body);
+        let result = await collection.insertOne({
+            userId: new ObjectId(req.body.userId),
+            communityId: new ObjectId(req.body.communityId),
+            goalId: new ObjectId(req.body.goalId),
+            value: req.body.value,
+            points: req.body.points,
+            date: new Date()
+        });
         res.json(result);
     }
     catch(e){
@@ -331,11 +354,11 @@ app.post("/activities", (req, res) => {
 });
 
 // PUT - Update activity
-app.put("/activities/:id", (req, res) => {
+app.put("/activities/:id", async (req, res) => {
     try{
         let collection = db.collection("Activities");
         let id = new ObjectId(req.params.id);
-        let result = collection.updateOne(
+        let result = await collection.updateOne(
             {"_id": id},
             {$set: req.body},
             {upsert: false}
@@ -349,11 +372,11 @@ app.put("/activities/:id", (req, res) => {
 });
 
 // DELETE - Remove activity
-app.delete("/activities/:id", (req, res) => {
+app.delete("/activities/:id", async (req, res) => {
     try{
         let collection = db.collection("Activities");
         let id = new ObjectId(req.params.id);
-        let result = collection.deleteOne({"_id": id});
+        let result = await collection.deleteOne({"_id": id});
         res.json(result);
     }
     catch(e){
@@ -550,6 +573,83 @@ app.delete("/goals/:id", async (req, res) => {
     catch(e){
         console.log(e);
         res.status(500).json({error: "Error deleting goal"});
+    }
+});
+// =====================================================
+// USER GOAL TARGETS
+// =====================================================
+
+// POST - Set user's target for a goal
+app.post("/user-goal-targets", async (req, res) => {
+    try{
+        let collection = db.collection("UserGoalTargets");
+        let result = await collection.updateOne(
+            {
+                userId: new ObjectId(req.body.userId),
+                goalId: new ObjectId(req.body.goalId)
+            },
+            {
+                $set: {
+                    userId: new ObjectId(req.body.userId),
+                    goalId: new ObjectId(req.body.goalId),
+                    targetPoints: req.body.targetPoints
+                }
+            },
+            { upsert: true }
+        );
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error setting target"});
+    }
+});
+
+// GET - Get user's target for a goal
+app.get("/user-goal-targets/user/:userId/goal/:goalId", async (req, res) => {
+    try{
+        let collection = db.collection("UserGoalTargets");
+        let result = await collection.findOne({
+            userId: new ObjectId(req.params.userId),
+            goalId: new ObjectId(req.params.goalId)
+        });
+        
+        if (!result) {
+            res.json({ targetPoints: 0 });
+        } else {
+            res.json(result);
+        }
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching target"});
+    }
+});
+
+// GET - Get all targets for user in a community
+app.get("/user-goal-targets/user/:userId/community/:communityId", async (req, res) => {
+    try{
+        let targetsCollection = db.collection("UserGoalTargets");
+        let goalsCollection = db.collection("Goals");
+        
+        // Get all goals in this community
+        let goals = await goalsCollection.find({
+            communityId: new ObjectId(req.params.communityId)
+        }).toArray();
+        
+        let goalIds = goals.map(g => g._id);
+        
+        // Get user's targets for these goals
+        let targets = await targetsCollection.find({
+            userId: new ObjectId(req.params.userId),
+            goalId: { $in: goalIds }
+        }).toArray();
+        
+        res.json(targets);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching targets"});
     }
 });
 // =====================================================
@@ -829,6 +929,153 @@ async function seedData(db) {
 // =====================================================
 // DATABASE CONNECTION
 // =====================================================
+// =====================================================
+// STATS & LEADERBOARD ROUTES
+// =====================================================
+
+// GET user's total points across all communities
+app.get("/users/:userId/stats", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.aggregate([
+            {
+                $match: { userId: new ObjectId(req.params.userId) }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalPoints: { $sum: "$points" },
+                    totalActivities: { $sum: 1 }
+                }
+            }
+        ]).toArray();
+        
+        if (result.length === 0) {
+            res.json({ totalPoints: 0, totalActivities: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching user stats"});
+    }
+});
+
+// GET user's points by community
+app.get("/users/:userId/stats/community/:communityId", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.aggregate([
+            {
+                $match: {
+                    userId: new ObjectId(req.params.userId),
+                    communityId: new ObjectId(req.params.communityId)
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalPoints: { $sum: "$points" },
+                    totalActivities: { $sum: 1 }
+                }
+            }
+        ]).toArray();
+        
+        if (result.length === 0) {
+            res.json({ totalPoints: 0, totalActivities: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching community stats"});
+    }
+});
+
+// GET user's activities for a specific goal
+app.get("/users/:userId/stats/goal/:goalId", async (req, res) => {
+    try{
+        let collection = db.collection("Activities");
+        let result = await collection.aggregate([
+            {
+                $match: {
+                    userId: new ObjectId(req.params.userId),
+                    goalId: new ObjectId(req.params.goalId)
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalPoints: { $sum: "$points" },
+                    timesLogged: { $sum: 1 }
+                }
+            }
+        ]).toArray();
+        
+        if (result.length === 0) {
+            res.json({ totalPoints: 0, timesLogged: 0 });
+        } else {
+            res.json(result[0]);
+        }
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching goal stats"});
+    }
+});
+
+// GET leaderboard for a community (ranked by points)
+app.get("/leaderboard/community/:communityId", async (req, res) => {
+    try{
+        let activitiesCollection = db.collection("Activities");
+        let usersCollection = db.collection("Users");
+        
+        // Get all activities in this community grouped by user
+        let leaderboard = await activitiesCollection.aggregate([
+            {
+                $match: { communityId: new ObjectId(req.params.communityId) }
+            },
+            {
+                $group: {
+                    _id: "$userId",
+                    totalPoints: { $sum: "$points" },
+                    totalActivities: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { totalPoints: -1 }
+            },
+            {
+                $lookup: {
+                    from: "Users",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "userInfo"
+                }
+            },
+            {
+                $unwind: "$userInfo"
+            },
+            {
+                $project: {
+                    userId: "$_id",
+                    username: "$userInfo.username",
+                    totalPoints: 1,
+                    totalActivities: 1,
+                    _id: 0
+                }
+            }
+        ]).toArray();
+        
+        res.json(leaderboard);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error fetching leaderboard"});
+    }
+});
 
 async function connectDB(){
     const uri = "mongodb://localhost:27017/";

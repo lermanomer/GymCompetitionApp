@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Communities from './Communities';
-
-const API_URL = import.meta.env.VITE_API_URL;
+import CommunityDetail from './CommunityDetail';
 
 function Dashboard({ user, onLogout }) {
+  const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [currentView, setCurrentView] = useState('communities');
 
   return (
@@ -18,30 +18,44 @@ function Dashboard({ user, onLogout }) {
         </div>
       </div>
 
-      <div style={{marginBottom: '20px'}}>
-        <button 
-          onClick={() => setCurrentView('communities')}
-          style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'communities' ? 'lightblue' : '#ddd'}}
-        >
-          Communities
-        </button>
-        <button 
-          onClick={() => setCurrentView('profile')}
-          style={{padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'profile' ? 'lightblue' : '#ddd'}}
-        >
-          Profile
-        </button>
-      </div>
+      {/* IF VIEWING A COMMUNITY */}
+      {selectedCommunity ? (
+        <CommunityDetail 
+          user={user} 
+          community={selectedCommunity}
+          onBack={() => setSelectedCommunity(null)}
+        />
+      ) : (
+        <>
+          {/* COMMUNITIES VIEW */}
+          <div style={{marginBottom: '20px'}}>
+            <button 
+              onClick={() => setCurrentView('communities')}
+              style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'communities' ? 'lightblue' : '#ddd'}}
+            >
+              Communities
+            </button>
+            <button 
+              onClick={() => setCurrentView('profile')}
+              style={{padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'profile' ? 'lightblue' : '#ddd'}}
+            >
+              Profile
+            </button>
+          </div>
 
-      {currentView === 'communities' && <Communities user={user} />}
+          {currentView === 'communities' && (
+            <Communities user={user} onSelectCommunity={setSelectedCommunity} />
+          )}
 
-      {currentView === 'profile' && (
-        <div style={{padding: '20px', border: '1px solid #ddd', borderRadius: '5px'}}>
-          <h2>Profile</h2>
-          <p><strong>Username:</strong> {user.username}</p>
-          <p><strong>User ID:</strong> {user._id}</p>
-          <p><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</p>
-        </div>
+          {currentView === 'profile' && (
+            <div style={{padding: '20px', border: '1px solid #ddd', borderRadius: '5px'}}>
+              <h2>Profile</h2>
+              <p><strong>Username:</strong> {user.username}</p>
+              <p><strong>User ID:</strong> {user._id}</p>
+              <p><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
