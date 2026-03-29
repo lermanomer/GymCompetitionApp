@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Communities from './Communities';
 import CommunityDetail from './CommunityDetail';
+import AdminPanel from './AdminPanel';
 
 function Dashboard({ user, onLogout }) {
   const [selectedCommunity, setSelectedCommunity] = useState(null);
@@ -18,29 +19,35 @@ function Dashboard({ user, onLogout }) {
         </div>
       </div>
 
-      {/* IF VIEWING A COMMUNITY */}
       {selectedCommunity ? (
-        <CommunityDetail 
-          user={user} 
+        <CommunityDetail
+          user={user}
           community={selectedCommunity}
           onBack={() => setSelectedCommunity(null)}
         />
       ) : (
         <>
-          {/* COMMUNITIES VIEW */}
           <div style={{marginBottom: '20px'}}>
-            <button 
+            <button
               onClick={() => setCurrentView('communities')}
               style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'communities' ? 'lightblue' : '#ddd'}}
             >
               Communities
             </button>
-            <button 
+            <button
               onClick={() => setCurrentView('profile')}
-              style={{padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'profile' ? 'lightblue' : '#ddd'}}
+              style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'profile' ? 'lightblue' : '#ddd'}}
             >
               Profile
             </button>
+            {user.isAdmin && (
+              <button
+                onClick={() => setCurrentView('admin')}
+                style={{padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'admin' ? '#1A1A2E' : '#ddd', color: currentView === 'admin' ? 'white' : 'black'}}
+              >
+                ⚙️ Admin Panel
+              </button>
+            )}
           </div>
 
           {currentView === 'communities' && (
@@ -54,6 +61,10 @@ function Dashboard({ user, onLogout }) {
               <p><strong>User ID:</strong> {user._id}</p>
               <p><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</p>
             </div>
+          )}
+
+          {currentView === 'admin' && user.isAdmin && (
+            <AdminPanel />
           )}
         </>
       )}
