@@ -172,9 +172,67 @@ function GoalsAndActivities({ user, communityId, communityName }) {
  if (loading) return <div>Loading...</div>;
 
 
+//for completed goals progress bar
+ const totalGoals = goals.length;
+
+const completedGoals = goals.filter((goal) => {
+  const stats = goalStats[goal._id] || { totalPoints: 0, timesLogged: 0 };
+  const target = targetGoals[goal._id] || 0;
+
+  return target > 0 && stats.totalPoints >= target;
+}).length;
+
+const overallProgressPercent =
+  totalGoals > 0 ? Math.round((completedGoals / totalGoals) * 100) : 0;
+
+
  return (
    <div style={{padding: '20px'}}>
      <h2>{communityName} - Goals</h2>
+
+    {/*goal progress bar*/}
+     <div
+  style={{
+    marginBottom: '25px',
+    padding: '15px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    backgroundColor: '#f8f9fa'
+  }}
+>
+  <div
+    style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '10px'
+    }}
+  >
+    <strong>
+      Progress: {completedGoals} / {totalGoals} goals completed
+    </strong>
+    <span>{overallProgressPercent}%</span>
+  </div>
+
+  <div
+    style={{
+      width: '100%',
+      height: '22px',
+      backgroundColor: '#ddd',
+      borderRadius: '999px',
+      overflow: 'hidden'
+    }}
+  >
+    <div
+      style={{
+        width: `${overallProgressPercent}%`,
+        height: '100%',
+        backgroundColor: '#4CAF50',
+        transition: 'width 0.3s ease'
+      }}
+    />
+  </div>
+</div>
 
 
      <div style={{marginBottom: '40px'}}>
