@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = 'http://localhost:8080';
 
 function GoalsAndActivities({ user, communityId, communityName }) {
   const [goals, setGoals] = useState([]);
@@ -22,6 +22,7 @@ function GoalsAndActivities({ user, communityId, communityName }) {
       let goalsData = await goalsResponse.json();
       setGoals(goalsData);
 
+<<<<<<< HEAD
       let statsObj = {};
       for (let goal of goalsData) {
         let statsResponse = await fetch(`${API_URL}/users/${user._id}/stats/goal/${goal._id}`);
@@ -38,7 +39,22 @@ function GoalsAndActivities({ user, communityId, communityName }) {
         targetsObj[target.goalId] = target.targetPoints;
       }
       setTargetGoals(targetsObj);
+=======
+      console.log("user._id:", user._id);
+      console.log("communityId:", communityId);
+
+      let activitiesResponse = await fetch(`${API_URL}/activities/user/${user._id}`);
+      let activitiesData = await activitiesResponse.json();
+
+      console.log("activities returned:", activitiesData.length);
+      console.log("first activity:", activitiesData[0]);
+
+      let filtered = activitiesData.filter(a => String(a.communityId) === String(communityId));
+>>>>>>> 40263316301f6a054a3d4527dbe53831fdec33a8
       
+      console.log("filtered activities:", filtered.length);
+
+      setActivities(filtered);
       setLoading(false);
     }
     catch (error) {
@@ -51,8 +67,11 @@ function GoalsAndActivities({ user, communityId, communityName }) {
   const handleLogActivity = async (goalId, goalType, points) => {
     try {
       let value;
+<<<<<<< HEAD
       let calculatedPoints;
 
+=======
+>>>>>>> 40263316301f6a054a3d4527dbe53831fdec33a8
       if (goalType === 'yes_no') {
         value = true;
         calculatedPoints = points;
@@ -81,7 +100,7 @@ function GoalsAndActivities({ user, communityId, communityName }) {
       });
 
       if (response.ok) {
-        setMessage("Activity logged!");
+        setMessage("✅ Activity logged!");
         setInputValue('');
         setSelectedGoalId(null);
         fetchGoalsAndStats();
@@ -95,6 +114,7 @@ function GoalsAndActivities({ user, communityId, communityName }) {
     }
   };
 
+<<<<<<< HEAD
   const handleSetTarget = async (goalId, targetValue) => {
     try {
       let numValue = parseInt(targetValue) || 0;
@@ -153,6 +173,14 @@ function GoalsAndActivities({ user, communityId, communityName }) {
       console.log("Error resetting goal:", error);
     }
   };
+=======
+  const getGoalName = (goalId) => {
+    let goal = goals.find(g => g._id === goalId);
+    return goal ? goal.name : goalId;
+  };
+
+  const totalPoints = activities.reduce((sum, a) => sum + (a.points || 0), 0);
+>>>>>>> 40263316301f6a054a3d4527dbe53831fdec33a8
 
   if (loading) return <div>Loading...</div>;
 
@@ -160,11 +188,24 @@ function GoalsAndActivities({ user, communityId, communityName }) {
     <div style={{padding: '20px'}}>
       <h2>{communityName} - Goals</h2>
 
+      <div style={{
+        backgroundColor: '#1A1A2E', color: 'white',
+        padding: '15px 20px', borderRadius: '8px',
+        marginBottom: '25px', display: 'flex',
+        justifyContent: 'space-between', alignItems: 'center'
+      }}>
+        <span style={{fontSize: '16px'}}>Your Total Points in {communityName}</span>
+        <span style={{fontSize: '28px', fontWeight: 'bold', color: '#E94560'}}>
+          {totalPoints.toFixed(1)} pts
+        </span>
+      </div>
+
       <div style={{marginBottom: '40px'}}>
         {goals.length === 0 ? (
           <p>No goals yet</p>
         ) : (
           <div>
+<<<<<<< HEAD
             {goals.map((goal) => {
               let stats = goalStats[goal._id] || { totalPoints: 0, timesLogged: 0 };
               let target = targetGoals[goal._id] || 0;
@@ -250,12 +291,44 @@ function GoalsAndActivities({ user, communityId, communityName }) {
 
                   {/* LOG ACTIVITY */}
                   {goal.type === 'yes_no' ? (
+=======
+            {goals.map((goal) => (
+              <div key={goal._id} style={{
+                border: '1px solid #ddd', padding: '15px',
+                marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f9f9f9'
+              }}>
+                <h4>{goal.name}</h4>
+                <p>{goal.description}</p>
+                <p><strong>Points:</strong> {goal.points}</p>
+                <p><strong>Type:</strong> {goal.type === 'yes_no' ? 'Yes/No' : 'Numeric'}</p>
+
+                {goal.type === 'yes_no' ? (
+                  <button
+                    onClick={() => handleLogActivity(goal._id, goal.type, goal.points)}
+                    style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
+                  >
+                    Log Now
+                  </button>
+                ) : (
+                  <div style={{marginTop: '10px'}}>
+                    <input
+                      type="number"
+                      placeholder="Enter value"
+                      value={selectedGoalId === goal._id ? inputValue : ''}
+                      onChange={(e) => {
+                        setSelectedGoalId(goal._id);
+                        setInputValue(e.target.value);
+                      }}
+                      style={{padding: '8px', marginRight: '10px'}}
+                    />
+>>>>>>> 40263316301f6a054a3d4527dbe53831fdec33a8
                     <button
                       onClick={() => handleLogActivity(goal._id, goal.type, goal.points)}
                       style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
                     >
                       Log Now
                     </button>
+<<<<<<< HEAD
                   ) : (
                     <div style={{marginTop: '10px'}}>
                       <input
@@ -279,12 +352,50 @@ function GoalsAndActivities({ user, communityId, communityName }) {
                 </div>
               );
             })}
+=======
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div>
+        <h3>Your Activities ({activities.length})</h3>
+        {activities.length === 0 ? (
+          <p>No activities logged yet</p>
+        ) : (
+          <div>
+            {activities.map((activity) => (
+              <div key={activity._id} style={{
+                border: '1px solid #ccc', padding: '10px',
+                marginBottom: '8px', backgroundColor: '#f0f0f0', borderRadius: '5px',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+              }}>
+                <div>
+                  <p style={{margin: 0, fontWeight: 'bold'}}>{getGoalName(activity.goalId)}</p>
+                  <p style={{margin: 0, fontSize: '12px', color: '#666'}}>
+                    {new Date(activity.date).toLocaleDateString()}
+                    {activity.value !== true && ` • Value: ${activity.value}`}
+                  </p>
+                </div>
+                <span style={{
+                  fontWeight: 'bold', color: '#2C5F2D',
+                  fontSize: '16px'
+                }}>+{activity.points} pts</span>
+              </div>
+            ))}
+>>>>>>> 40263316301f6a054a3d4527dbe53831fdec33a8
           </div>
         )}
       </div>
 
       {message && (
-        <div style={{marginTop: '20px', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px'}}>
+        <div style={{
+          marginTop: '20px', padding: '10px',
+          backgroundColor: '#f0f0f0', borderRadius: '5px'
+        }}>
           {message}
         </div>
       )}
