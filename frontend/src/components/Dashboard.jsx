@@ -3,6 +3,8 @@ import Communities from './Communities';
 import CommunityDetail from './CommunityDetail';
 import AdminPanel from './AdminPanel';
 
+import Leaderboard from "./Leaderboard"; // new addition
+
 function Dashboard({ user, onLogout }) {
   const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [currentView, setCurrentView] = useState('communities');
@@ -40,6 +42,14 @@ function Dashboard({ user, onLogout }) {
             >
               Profile
             </button>
+            
+            <button
+              onClick={() => setCurrentView('leaderboard')}
+              style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'leaderboard' ? 'lightblue' : '#ddd'}}
+            >
+              Leaderboard
+            </button>
+
             {user.isAdmin && (
               <button
                 onClick={() => setCurrentView('admin')}
@@ -62,6 +72,9 @@ function Dashboard({ user, onLogout }) {
               <p><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</p>
             </div>
           )}
+          {currentView === 'leaderboard' && ( //new addition - leaderboard
+            <Leaderboard /> // new addition - leaderboard
+          )} 
 
           {currentView === 'admin' && user.isAdmin && (
             <AdminPanel />
