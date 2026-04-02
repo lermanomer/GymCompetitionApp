@@ -4,6 +4,7 @@ import CommunityDetail from './CommunityDetail';
 import AdminPanel from './AdminPanel';
 
 import Leaderboard from "./Leaderboard"; // new addition
+import ProfileDetails from './ProfileDetails'; // new addition
 
 function Dashboard({ user, onLogout }) {
   const [selectedCommunity, setSelectedCommunity] = useState(null);
@@ -70,6 +71,8 @@ function Dashboard({ user, onLogout }) {
               <p><strong>Username:</strong> {user.username}</p>
               <p><strong>User ID:</strong> {user._id}</p>
               <p><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</p>
+              
+              <ProfileDetails user={user} /> 
             </div>
           )}
           {currentView === 'leaderboard' && ( //new addition - leaderboard
