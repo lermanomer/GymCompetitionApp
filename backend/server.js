@@ -851,156 +851,166 @@ app.post("/login", async (req, res) => {
 
 
 async function seedData(db) {
-   try {
-       let communitiesCollection = db.collection("Communities");
-       let count = await communitiesCollection.countDocuments();
-      
-       if (count === 0) {
-           let communities = await communitiesCollection.insertMany([
-               {
-                   name: "Gym",
-                   description: "Fitness and workout competition",
-                   createdBy: new ObjectId(),
-                   members: []
-               },
-               {
-                   name: "Gaming",
-                   description: "Video game competition",
-                   createdBy: new ObjectId(),
-                   members: []
-               },
-               {
-                   name: "Study",
-                   description: "Academic goals and learning",
-                   createdBy: new ObjectId(),
-                   members: []
-               }
-           ]);
+    try {
+        let communitiesCollection = db.collection("Communities");
+        let count = await communitiesCollection.countDocuments();
+        
+        if (count === 0) {
+            let communities = await communitiesCollection.insertMany([
+                {
+                    name: "Gym",
+                    description: "Fitness and workout competition",
+                    createdBy: new ObjectId(),
+                    members: []
+                },
+                {
+                    name: "Gaming",
+                    description: "Video game competition",
+                    createdBy: new ObjectId(),
+                    members: []
+                },
+                {
+                    name: "Study",
+                    description: "Academic goals and learning",
+                    createdBy: new ObjectId(),
+                    members: []
+                }
+            ]);
 
+            console.log("Communities created:", communities.insertedIds);
 
-           console.log("Communities created:", communities.insertedIds);
+            let goalsCollection = db.collection("Goals");
+            await goalsCollection.insertMany([
+                // GYM GOALS
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "Weight Loss",
+                    description: "Log pounds lost",
+                    type: "numeric",
+                    points: 0.5
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "2 Mile Run",
+                    description: "Complete a 2 mile run",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "Weight Lifting",
+                    description: "Complete a weight lifting session",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "30 Minute Stairmaster/Treadmill",
+                    description: "Complete 30 minutes on stairmaster or treadmill",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[0],
+                    name: "10k Steps",
+                    description: "Log 10,000 steps completed",
+                    type: "yes_no",
+                    points: 1
+                },
+                // GAMING GOALS
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "Game Session",
+                    description: "Complete a gaming session",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "New Game Started",
+                    description: "Start a new game",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "MVP in a Game",
+                    description: "Achieve MVP in a game match",
+                    type: "yes_no",
+                    points: 2
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "Complete Campaign",
+                    description: "Complete a game campaign",
+                    type: "yes_no",
+                    points: 5
+                },
+                {
+                    communityId: communities.insertedIds[1],
+                    name: "Hours Played",
+                    description: "Hours spent gaming",
+                    type: "numeric",
+                    points: 0.5
+                },
+                // STUDY GOALS
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "1 Hour Study Sesh",
+                    description: "Complete a 1 hour study session",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Practice Quiz",
+                    description: "Complete a practice quiz",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Chapters Completed",
+                    description: "Complete reading assigned chapters",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Podcast/Video Lesson",
+                    description: "Watch educational podcast or video",
+                    type: "yes_no",
+                    points: 1
+                },
+                {
+                    communityId: communities.insertedIds[2],
+                    name: "Assignments Completed",
+                    description: "Complete an assignment",
+                    type: "yes_no",
+                    points: 3
+                }
+            ]);
 
+            console.log("Goals created!");
+        }
 
-           let goalsCollection = db.collection("Goals");
-           await goalsCollection.insertMany([
-               // GYM GOALS
-               {
-                   communityId: communities.insertedIds[0],
-                   name: "Weight Loss",
-                   description: "Log pounds lost",
-                   type: "numeric",
-                   points: 0.5
-               },
-               {
-                   communityId: communities.insertedIds[0],
-                   name: "2 Mile Run",
-                   description: "Complete a 2 mile run",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[0],
-                   name: "Weight Lifting",
-                   description: "Complete a weight lifting session",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[0],
-                   name: "30 Minute Stairmaster/Treadmill",
-                   description: "Complete 30 minutes on stairmaster or treadmill",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[0],
-                   name: "10k Steps",
-                   description: "Log 10,000 steps completed",
-                   type: "yes_no",
-                   points: 1
-               },
-               // GAMING GOALS
-               {
-                   communityId: communities.insertedIds[1],
-                   name: "Game Session",
-                   description: "Complete a gaming session",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[1],
-                   name: "New Game Started",
-                   description: "Start a new game",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[1],
-                   name: "MVP in a Game",
-                   description: "Achieve MVP in a game match",
-                   type: "yes_no",
-                   points: 2
-               },
-               {
-                   communityId: communities.insertedIds[1],
-                   name: "Complete Campaign",
-                   description: "Complete a game campaign",
-                   type: "yes_no",
-                   points: 5
-               },
-               {
-                   communityId: communities.insertedIds[1],
-                   name: "Hours Played",
-                   description: "Hours spent gaming",
-                   type: "numeric",
-                   points: 0.5
-               },
-               // STUDY GOALS
-               {
-                   communityId: communities.insertedIds[2],
-                   name: "1 Hour Study Sesh",
-                   description: "Complete a 1 hour study session",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[2],
-                   name: "Practice Quiz",
-                   description: "Complete a practice quiz",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[2],
-                   name: "Chapters Completed",
-                   description: "Complete reading assigned chapters",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[2],
-                   name: "Podcast/Video Lesson",
-                   description: "Watch educational podcast or video",
-                   type: "yes_no",
-                   points: 1
-               },
-               {
-                   communityId: communities.insertedIds[2],
-                   name: "Assignments Completed",
-                   description: "Complete an assignment",
-                   type: "yes_no",
-                   points: 3
-               }
-           ]);
+        // CREATE ADMIN USER
+        let usersCollection = db.collection("Users");
+        let adminCount = await usersCollection.countDocuments({isAdmin: true});
 
+        if (adminCount === 0) {
+            await usersCollection.insertOne({
+                username: "admin",
+                password: "admin123",
+                isAdmin: true
+            });
+            console.log("Admin user created!");
+        }
 
-           console.log("Goals created!");
-       }
-   } catch (e) {
-       console.log("Error seeding data:", e);
-   }
+    } catch (e) {
+        console.log("Error seeding data:", e);
+    }
 }
-
 
 // =====================================================
 // DATABASE CONNECTION
