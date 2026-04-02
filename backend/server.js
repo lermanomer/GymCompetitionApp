@@ -489,6 +489,21 @@ app.post("/communities/:id/join", async (req, res) => {
        res.status(500).json({error: "Error joining community"});
    }
 });
+// POST - Leave community
+app.post("/communities/:id/leave", async (req, res) => {
+    try{
+        let collection = db.collection("Communities");
+        let result = await collection.updateOne(
+            {"_id": new ObjectId(req.params.id)},
+            {$pull: {"members": new ObjectId(req.body.userId)}}
+        );
+        res.json(result);
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).json({error: "Error leaving community"});
+    }
+});
 
 
 // PUT - Update community
