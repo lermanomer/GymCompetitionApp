@@ -75,9 +75,9 @@ function Dashboard({ user, onLogout }) {
               <ProfileDetails user={user} /> 
             </div>
           )}
-          {currentView === 'leaderboard' && ( //new addition - leaderboard
-            <Leaderboard /> // new addition - leaderboard
-          )} 
+          {currentView === 'leaderboard' && (
+            <Leaderboard user={user} />
+          )}
 
           {currentView === 'admin' && user.isAdmin && (
             <AdminPanel />
