@@ -86,33 +86,41 @@ function Communities({ user, onSelectCommunity }) {
   );
 
   return (
-    <div style={{padding: '20px', fontFamily: 'Arial'}}>
-      <h2>Communities</h2>
+    <div>
+      <h2 className="h2">Communities</h2>
+      <p className="muted" style={{ marginTop: 6 }}>
+        Join a community to participate in challenges and track your progress.
+      </p>
 
       {/* MY COMMUNITIES */}
-      <div style={{marginBottom: '40px'}}>
-        <h3>My Communities ({userCommunities.length})</h3>
+      <div style={{ marginTop: 16 }}>
+        <h3 className="h2">My Communities ({userCommunities.length})</h3>
         {userCommunities.length === 0 ? (
-          <p>You haven't joined any communities yet. Join one below!</p>
+          <p className="muted">You haven't joined any communities yet. Join one below!</p>
         ) : (
-          <div>
+          <div className="grid grid2" style={{ marginTop: 12 }}>
             {userCommunities.map((comm) => (
-              <div key={comm._id} style={{border: '1px solid #ddd', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f9f9f9'}}>
-                <h4>{comm.name}</h4>
-                <p>{comm.description}</p>
-                <p><strong>Members:</strong> {comm.members.length}</p>
-                <button
-                  onClick={() => onSelectCommunity(comm)}
-                  style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen', marginRight: '10px'}}
-                >
-                  View Community
-                </button>
-                <button
-                  onClick={() => handleLeaveCommunity(comm._id)}
-                  style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightcoral'}}
-                >
-                  Leave Community
-                </button>
+              <div key={comm._id} className="card">
+                <h4 className="cardTitle">{comm.name}</h4>
+                <p className="cardDesc">{comm.description}</p>
+                <div className="cardMeta">
+                  <span><strong>Members:</strong> {comm.members.length}</span>
+                </div>
+
+                <div className="cardActions">
+                  <button
+                    onClick={() => onSelectCommunity(comm)}
+                    className="btn btnSuccess"
+                  >
+                    View community
+                  </button>
+                  <button
+                    onClick={() => handleLeaveCommunity(comm._id)}
+                    className="btn btnDanger"
+                  >
+                    Leave
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -120,34 +128,34 @@ function Communities({ user, onSelectCommunity }) {
       </div>
 
       {/* AVAILABLE COMMUNITIES */}
-      <div>
-        <h3>Available Communities ({availableCommunities.length})</h3>
+      <div style={{ marginTop: 22 }}>
+        <h3 className="h2">Available Communities ({availableCommunities.length})</h3>
         {availableCommunities.length === 0 ? (
-          <p>You've joined all communities!</p>
+          <p className="muted">You've joined all communities!</p>
         ) : (
-          <div>
+          <div className="grid grid2" style={{ marginTop: 12 }}>
             {availableCommunities.map((comm) => (
-              <div key={comm._id} style={{border: '1px solid #ccc', padding: '15px', marginBottom: '10px', borderRadius: '5px', backgroundColor: '#f0f0f0'}}>
-                <h4>{comm.name}</h4>
-                <p>{comm.description}</p>
-                <p><strong>Members:</strong> {comm.members.length}</p>
-                <button
-                  onClick={() => handleJoinCommunity(comm._id)}
-                  style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightblue'}}
-                >
-                  Join Community
-                </button>
+              <div key={comm._id} className="card">
+                <h4 className="cardTitle">{comm.name}</h4>
+                <p className="cardDesc">{comm.description}</p>
+                <div className="cardMeta">
+                  <span><strong>Members:</strong> {comm.members.length}</span>
+                </div>
+                <div className="cardActions">
+                  <button
+                    onClick={() => handleJoinCommunity(comm._id)}
+                    className="btn btnPrimary"
+                  >
+                    Join community
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         )}
       </div>
 
-      {message && (
-        <div style={{marginTop: '20px', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px'}}>
-          {message}
-        </div>
-      )}
+      {message && <div className="alert">{message}</div>}
     </div>
   );
 }

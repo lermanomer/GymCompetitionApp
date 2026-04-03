@@ -187,55 +187,27 @@ const overallProgressPercent =
 
 
  return (
-   <div style={{padding: '20px'}}>
-     <h2>{communityName} - Goals</h2>
+   <div>
+     <h2 className="h2">{communityName} goals</h2>
+     <p className="muted" style={{ marginTop: 6 }}>
+       Lock in targets, then log your activities to score points.
+     </p>
 
     {/*goal progress bar*/}
-     <div
-  style={{
-    marginBottom: '25px',
-    padding: '15px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    backgroundColor: '#f8f9fa'
-  }}
->
-  <div
-    style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      marginBottom: '10px'
-    }}
-  >
-    <strong>
-      Progress: {completedGoals} / {totalGoals} goals completed
-    </strong>
-    <span>{overallProgressPercent}%</span>
-  </div>
-
-  <div
-    style={{
-      width: '100%',
-      height: '22px',
-      backgroundColor: '#ddd',
-      borderRadius: '999px',
-      overflow: 'hidden'
-    }}
-  >
-    <div
-      style={{
-        width: `${overallProgressPercent}%`,
-        height: '100%',
-        backgroundColor: '#4CAF50',
-        transition: 'width 0.3s ease'
-      }}
-    />
-  </div>
-</div>
+     <div className="progressWrap" style={{ marginTop: 16, marginBottom: 18 }}>
+       <div className="progressTop">
+         <strong>
+           Progress: {completedGoals} / {totalGoals} goals completed
+         </strong>
+         <span className="muted">{overallProgressPercent}%</span>
+       </div>
+       <div className="bar">
+         <div className="barFill" style={{ width: `${overallProgressPercent}%` }} />
+       </div>
+     </div>
 
 
-     <div style={{marginBottom: '40px'}}>
+     <div style={{ marginBottom: 10 }}>
        {goals.length === 0 ? (
          <p>No goals yet</p>
        ) : (
@@ -249,78 +221,71 @@ const overallProgressPercent =
 
 
              return (
-               <div key={goal._id} style={{
-                 border: isLocked ? '2px solid #333' : '1px solid #ddd',
-                 padding: '15px',
-                 marginBottom: '15px',
-                 borderRadius: '5px',
-                 backgroundColor: isLocked ? '#f0f0f0' : '#f9f9f9',
-                 opacity: isLocked ? 1 : 1
-               }}>
-                 <h4>{goal.name}</h4>
-                 <p>{goal.description}</p>
-                 <p><strong>Points per unit:</strong> {goal.points}</p>
-                 <p><strong>Type:</strong> {goal.type === 'yes_no' ? 'Yes/No' : 'Numeric'}</p>
+               <div key={goal._id} className="card" style={{ borderWidth: isLocked ? 2 : 1, borderColor: isLocked ? 'rgba(15,23,42,0.35)' : 'var(--border)' }}>
+                 <h4 className="cardTitle">{goal.name}</h4>
+                 <p className="cardDesc">{goal.description}</p>
+                 <div className="cardMeta">
+                   <span><strong>Points:</strong> {goal.points} / unit</span>
+                   <span><strong>Type:</strong> {goal.type === 'yes_no' ? 'Yes/No' : 'Numeric'}</span>
+                 </div>
 
 
                  {/* POINTS DISPLAY */}
-                 <p style={{backgroundColor: '#e8f4f8', padding: '10px', borderRadius: '5px', marginBottom: '10px'}}>
-                   <strong>Your Points: {stats.totalPoints} pts</strong> (Logged {stats.timesLogged} times)
-                 </p>
+                 <div className="alert" style={{ marginTop: 8 }}>
+                   <strong>Your Points:</strong> {stats.totalPoints} pts · Logged {stats.timesLogged} times
+                 </div>
 
 
                  {/* PROGRESS BAR */}
                  {isLocked ? (
-                   <div style={{marginBottom: '15px'}}>
-                     <div style={{display: 'flex', gap: '10px', marginBottom: '10px', alignItems: 'center'}}>
-                       <div style={{flex: 1}}>
-                         <strong style={{color: isComplete ? '#4CAF50' : '#333'}}>
-                           Target: {target} points {isComplete ? '✅ COMPLETE!' : ''}
-                         </strong>
-                       </div>
-                       <span>{Math.round(progress)}%</span>
+                   <div style={{ marginTop: 12 }}>
+                     <div className="progressTop">
+                       <strong style={{ color: isComplete ? 'var(--success)' : 'var(--text)' }}>
+                         Target: {target} points {isComplete ? '✅ COMPLETE!' : ''}
+                       </strong>
+                       <span className="muted">{Math.round(progress)}%</span>
                      </div>
-                     <div style={{backgroundColor: '#ddd', borderRadius: '10px', height: '20px', overflow: 'hidden'}}>
-                       <div style={{
-                         backgroundColor: isComplete ? '#4CAF50' : '#2196F3',
-                         height: '100%',
-                         width: `${Math.min(progress, 100)}%`,
-                         transition: 'width 0.3s'
-                       }}></div>
+                     <div className="bar" style={{ height: 10 }}>
+                       <div
+                         className="barFill"
+                         style={{ width: `${Math.min(progress, 100)}%` }}
+                       />
                      </div>
-                     <p style={{fontSize: '12px', marginTop: '5px', color: '#666'}}>
+                     <div className="help">
                        {stats.totalPoints} / {target} points
-                     </p>
-                    
+                     </div>
+
                      {isComplete && (
                        <button
                          onClick={() => handleResetTarget(goal._id)}
-                         style={{padding: '8px 15px', marginTop: '10px', cursor: 'pointer', backgroundColor: '#FF9800', color: 'white'}}
+                         className="btn"
+                         style={{ marginTop: 10, borderColor: 'rgba(245,158,11,0.35)', background: 'rgba(245,158,11,0.10)', color: '#92400e' }}
                        >
-                         🔓 Reset Goal
+                         🔓 Reset goal
                        </button>
                      )}
                    </div>
                  ) : (
-                   <div style={{marginBottom: '15px'}}>
-                     <div style={{display: 'flex', gap: '10px'}}>
+                   <div style={{ marginTop: 12 }}>
+                     <div style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
                        <input
                          type="number"
-                         placeholder="Enter target points"
+                         placeholder="Target points"
                          value={tempInputs[goal._id] || ''}
-                         onChange={(e) => setTempInputs({...tempInputs, [goal._id]: e.target.value})}
-                         onKeyPress={(e) => {
+                         onChange={(e) => setTempInputs({ ...tempInputs, [goal._id]: e.target.value })}
+                         onKeyDown={(e) => {
                            if (e.key === 'Enter') {
                              handleSetTarget(goal._id, tempInputs[goal._id]);
                            }
                          }}
-                         style={{padding: '8px', flex: 1}}
+                         className="input"
+                         style={{ flex: 1, minWidth: 220 }}
                        />
                        <button
                          onClick={() => handleSetTarget(goal._id, tempInputs[goal._id])}
-                         style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: '#2196F3', color: 'white'}}
+                         className="btn btnPrimary"
                        >
-                         🔒 Lock Goal
+                         🔒 Lock target
                        </button>
                      </div>
                    </div>
@@ -331,25 +296,27 @@ const overallProgressPercent =
                  {goal.type === 'yes_no' ? (
                    <button
                      onClick={() => handleLogActivity(goal._id, goal.type, goal.points)}
-                     style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
+                     className="btn btnSuccess"
+                     style={{ marginTop: 12 }}
                    >
-                     Log Now
+                     Log now
                    </button>
                  ) : (
-                   <div style={{marginTop: '10px'}}>
+                   <div style={{ marginTop: 12, display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
                      <input
                        type="number"
-                       placeholder="Enter value"
+                       placeholder="Value"
                        value={selectedGoalId === goal._id ? inputValue : ''}
                        onChange={(e) => {
                          setSelectedGoalId(goal._id);
                          setInputValue(e.target.value);
                        }}
-                       style={{padding: '8px', marginRight: '10px'}}
+                       className="input"
+                       style={{ maxWidth: 220 }}
                      />
                      <button
                        onClick={() => handleLogActivity(goal._id, goal.type, goal.points)}
-                       style={{padding: '8px 15px', cursor: 'pointer', backgroundColor: 'lightgreen'}}
+                       className="btn btnSuccess"
                      >
                        Log
                      </button>
@@ -364,7 +331,8 @@ const overallProgressPercent =
 
 
      {message && (
-       <div style={{marginTop: '20px', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px'}}>
+       <div className={`alert ${message.toLowerCase().includes('error') ? 'alertDanger' : 'alertSuccess'}`}
+       >
          {message}
        </div>
      )}

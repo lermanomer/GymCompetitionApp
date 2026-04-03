@@ -1,26 +1,28 @@
-import { useState } from 'react';
 import GoalsAndActivities from './GoalsAndActivities';
 
 
 function CommunityDetail({ user, community, onBack }) {
  return (
-   <div style={{padding: '20px', fontFamily: 'Arial'}}>
-     <div style={{marginBottom: '20px'}}>
-       <button
-         onClick={onBack}
-         style={{padding: '10px 20px', cursor: 'pointer', backgroundColor: 'lightblue'}}
-       >
-         ← Back to Communities
-       </button>
+   <div>
+     <button onClick={onBack} className="btn btnGhost" style={{ marginBottom: 12 }}>
+       ← Back to communities
+     </button>
+
+     <div className="card">
+       <h2 className="h2">{community.name}</h2>
+       <p className="muted" style={{ marginTop: 6 }}>{community.description}</p>
+       <div className="cardMeta" style={{ marginTop: 10 }}>
+         <span><strong>Members:</strong> {community.members.length}</span>
+       </div>
      </div>
 
-
-     <h2>{community.name}</h2>
-     <p>{community.description}</p>
-     <p><strong>Members:</strong> {community.members.length}</p>
-
-
-     <GoalsAndActivities user={user} communityId={community._id} communityName={community.name} />
+     <div style={{ marginTop: 14 }}>
+       <GoalsAndActivities
+         user={user}
+         communityId={community._id}
+         communityName={community.name}
+       />
+     </div>
    </div>
  );
 }

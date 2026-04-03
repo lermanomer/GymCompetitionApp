@@ -100,32 +100,27 @@ function AdminPanel() {
     fetchAll();
   };
 
-  const tabStyle = (tab) => ({
-    padding: '10px 20px', cursor: 'pointer', marginRight: '10px',
-    backgroundColor: activeTab === tab ? '#1A1A2E' : '#ddd',
-    color: activeTab === tab ? 'white' : 'black',
-    border: 'none', borderRadius: '5px'
-  });
+  const tabClass = (tab) =>
+    `tabBtn ${activeTab === tab ? 'tabBtnActive' : ''}`;
 
   return (
-    <div style={{padding: '20px'}}>
-      <h2 style={{color: '#1A1A2E'}}>⚙️ Admin Panel</h2>
+    <div>
+      <h2 className="h2">⚙️ Admin Panel</h2>
+      <p className="muted" style={{ marginTop: 6 }}>
+        Manage users, communities, and goals.
+      </p>
 
-      {message && (
-        <div style={{padding: '10px', backgroundColor: '#d4edda', borderRadius: '5px', marginBottom: '15px'}}>
-          {message}
-        </div>
-      )}
+      {message && <div className="alert alertSuccess">{message}</div>}
 
       {/* Tabs */}
-      <div style={{marginBottom: '20px'}}>
-        <button style={tabStyle('users')} onClick={() => setActiveTab('users')}>
+      <div className="tabs" style={{ marginTop: 12, marginBottom: 14 }}>
+        <button className={tabClass('users')} onClick={() => setActiveTab('users')}>
           Users ({users.length})
         </button>
-        <button style={tabStyle('communities')} onClick={() => setActiveTab('communities')}>
+        <button className={tabClass('communities')} onClick={() => setActiveTab('communities')}>
           Communities ({communities.length})
         </button>
-        <button style={tabStyle('goals')} onClick={() => setActiveTab('goals')}>
+        <button className={tabClass('goals')} onClick={() => setActiveTab('goals')}>
           Goals ({goals.length})
         </button>
       </div>
@@ -133,33 +128,20 @@ function AdminPanel() {
       {/* USERS TAB */}
       {activeTab === 'users' && (
         <div>
-          <h3>All Users</h3>
+          <h3 className="h2">All users</h3>
           {users.map(u => (
-            <div key={u._id} style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              border: '1px solid #ddd', padding: '12px', marginBottom: '8px', borderRadius: '5px'
-            }}>
+            <div key={u._id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <strong>{u.username}</strong>
-                <span style={{
-                  marginLeft: '10px', padding: '2px 8px', borderRadius: '10px',
-                  backgroundColor: u.isAdmin ? '#1A1A2E' : '#eee',
-                  color: u.isAdmin ? 'white' : 'black', fontSize: '12px'
-                }}>
+                <span className="chip" style={{ marginLeft: 10, padding: '4px 10px' }}>
                   {u.isAdmin ? 'Admin' : 'User'}
                 </span>
               </div>
               <div>
-                <button onClick={() => toggleAdmin(u)} style={{
-                  marginRight: '10px', padding: '6px 12px', cursor: 'pointer',
-                  backgroundColor: 'lightblue', border: 'none', borderRadius: '4px'
-                }}>
+                <button onClick={() => toggleAdmin(u)} className="btn" style={{ marginRight: 10 }}>
                   Toggle Admin
                 </button>
-                <button onClick={() => deleteUser(u._id)} style={{
-                  padding: '6px 12px', cursor: 'pointer',
-                  backgroundColor: 'salmon', border: 'none', borderRadius: '4px'
-                }}>
+                <button onClick={() => deleteUser(u._id)} className="btn btnDanger">
                   Delete
                 </button>
               </div>
@@ -171,47 +153,42 @@ function AdminPanel() {
       {/* COMMUNITIES TAB */}
       {activeTab === 'communities' && (
         <div>
-          <h3>All Communities</h3>
+          <h3 className="h2">All communities</h3>
 
           {/* Create Community Form */}
-          <div style={{border: '1px solid #ddd', padding: '15px', borderRadius: '5px', marginBottom: '20px', backgroundColor: '#f9f9f9'}}>
-            <h4>Create New Community</h4>
-            <input
+          <div className="card" style={{ marginBottom: 14 }}>
+            <h4 className="cardTitle">Create a community</h4>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 10 }}>
+              <input
               placeholder="Community name"
               value={newCommunityName}
               onChange={e => setNewCommunityName(e.target.value)}
-              style={{padding: '8px', marginRight: '10px', width: '200px'}}
+              className="input"
+              style={{ maxWidth: 260 }}
             />
-            <input
+              <input
               placeholder="Description"
               value={newCommunityDesc}
               onChange={e => setNewCommunityDesc(e.target.value)}
-              style={{padding: '8px', marginRight: '10px', width: '300px'}}
+              className="input"
+              style={{ maxWidth: 420 }}
             />
-            <button onClick={createCommunity} style={{
-              padding: '8px 16px', backgroundColor: '#1A1A2E',
-              color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'
-            }}>
-              Create
-            </button>
+              <button onClick={createCommunity} className="btn btnPrimary">
+                Create
+              </button>
+            </div>
           </div>
 
           {communities.map(c => (
-            <div key={c._id} style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              border: '1px solid #ddd', padding: '12px', marginBottom: '8px', borderRadius: '5px'
-            }}>
+            <div key={c._id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <strong>{c.name}</strong>
-                <p style={{margin: '4px 0 0', fontSize: '13px', color: '#666'}}>{c.description}</p>
-                <p style={{margin: '2px 0 0', fontSize: '12px', color: '#999'}}>
+                <p className="cardDesc" style={{ marginTop: 6 }}>{c.description}</p>
+                <p className="help" style={{ marginTop: 0 }}>
                   Members: {c.members ? c.members.length : 0}
                 </p>
               </div>
-              <button onClick={() => deleteCommunity(c._id)} style={{
-                padding: '6px 12px', cursor: 'pointer',
-                backgroundColor: 'salmon', border: 'none', borderRadius: '4px'
-              }}>
+              <button onClick={() => deleteCommunity(c._id)} className="btn btnDanger">
                 Delete
               </button>
             </div>
@@ -222,28 +199,31 @@ function AdminPanel() {
       {/* GOALS TAB */}
       {activeTab === 'goals' && (
         <div>
-          <h3>All Goals</h3>
+          <h3 className="h2">All goals</h3>
 
           {/* Create Goal Form */}
-          <div style={{border: '1px solid #ddd', padding: '15px', borderRadius: '5px', marginBottom: '20px', backgroundColor: '#f9f9f9'}}>
-            <h4>Create New Goal</h4>
-            <div style={{display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '10px'}}>
+          <div className="card" style={{ marginBottom: 14 }}>
+            <h4 className="cardTitle">Create a goal</h4>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 10 }}>
               <input
                 placeholder="Goal name"
                 value={newGoalName}
                 onChange={e => setNewGoalName(e.target.value)}
-                style={{padding: '8px', width: '180px'}}
+                className="input"
+                style={{ maxWidth: 240 }}
               />
               <input
                 placeholder="Description"
                 value={newGoalDesc}
                 onChange={e => setNewGoalDesc(e.target.value)}
-                style={{padding: '8px', width: '220px'}}
+                className="input"
+                style={{ maxWidth: 360 }}
               />
               <select
                 value={newGoalCommunityId}
                 onChange={e => setNewGoalCommunityId(e.target.value)}
-                style={{padding: '8px'}}
+                className="input"
+                style={{ maxWidth: 260 }}
               >
                 <option value="">Select community</option>
                 {communities.map(c => (
@@ -253,7 +233,8 @@ function AdminPanel() {
               <select
                 value={newGoalType}
                 onChange={e => setNewGoalType(e.target.value)}
-                style={{padding: '8px'}}
+                className="input"
+                style={{ maxWidth: 200 }}
               >
                 <option value="yes_no">Yes/No</option>
                 <option value="numeric">Numeric</option>
@@ -263,36 +244,28 @@ function AdminPanel() {
                 type="number"
                 value={newGoalPoints}
                 onChange={e => setNewGoalPoints(e.target.value)}
-                style={{padding: '8px', width: '80px'}}
+                className="input"
+                style={{ maxWidth: 140 }}
               />
             </div>
-            <button onClick={createGoal} style={{
-              padding: '8px 16px', backgroundColor: '#1A1A2E',
-              color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'
-            }}>
-              Create Goal
+            <button onClick={createGoal} className="btn btnPrimary">
+              Create goal
             </button>
           </div>
 
           {goals.map(g => (
-            <div key={g._id} style={{
-              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-              border: '1px solid #ddd', padding: '12px', marginBottom: '8px', borderRadius: '5px'
-            }}>
+            <div key={g._id} className="card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
                 <strong>{g.name}</strong>
-                <span style={{marginLeft: '10px', fontSize: '12px', color: '#666'}}>
+                <span className="help" style={{ marginLeft: 10 }}>
                   {communities.find(c => c._id === g.communityId)?.name || 'Unknown community'}
                 </span>
-                <p style={{margin: '4px 0 0', fontSize: '13px', color: '#666'}}>{g.description}</p>
-                <p style={{margin: '2px 0 0', fontSize: '12px'}}>
+                <p className="cardDesc" style={{ marginTop: 6 }}>{g.description}</p>
+                <p className="help" style={{ marginTop: 0 }}>
                   Type: {g.type} • Points: {g.points}
                 </p>
               </div>
-              <button onClick={() => deleteGoal(g._id)} style={{
-                padding: '6px 12px', cursor: 'pointer',
-                backgroundColor: 'salmon', border: 'none', borderRadius: '4px'
-              }}>
+              <button onClick={() => deleteGoal(g._id)} className="btn btnDanger">
                 Delete
               </button>
             </div>

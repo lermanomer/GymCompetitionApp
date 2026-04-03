@@ -70,122 +70,45 @@ function Login({ onLoginSuccess }) {
     }
   };
 
-  const pageStyle = {
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f4f7fb',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif'
-  };
-
-  const cardStyle = {
-    width: '100%',
-    maxWidth: '420px',
-    backgroundColor: '#ffffff',
-    padding: '40px 32px',
-    borderRadius: '16px',
-    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
-    textAlign: 'center'
-  };
-
-  const titleStyle = {
-    margin: '0 0 10px 0',
-    fontSize: '32px',
-    color: '#223247'
-  };
-
-  const subtitleStyle = {
-    marginBottom: '30px',
-    fontSize: '24px',
-    color: '#223247'
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '14px 16px',
-    fontSize: '16px',
-    border: '1px solid #d0d7e2',
-    borderRadius: '10px',
-    outline: 'none',
-    boxSizing: 'border-box'
-  };
-
-  const buttonStyle = {
-    width: '100%',
-    padding: '14px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    backgroundColor: '#8fd0e8',
-    color: '#1f2d3d',
-    border: 'none',
-    borderRadius: '10px',
-    marginTop: '10px'
-  };
-
-  const toggleButtonStyle = {
-    background: 'none',
-    border: 'none',
-    color: '#2563eb',
-    cursor: 'pointer',
-    fontSize: '16px',
-    padding: 0,
-    marginLeft: '6px'
-  };
-
-  const messageStyle = {
-    marginTop: '20px',
-    padding: '12px',
-    backgroundColor: '#f1f5f9',
-    borderRadius: '10px',
-    color: '#334155',
-    fontSize: '15px'
-  };
-
   return (
-    <div style={pageStyle}>
-      <div style={cardStyle}>
-        <h1 style={titleStyle}>Community Competition App</h1>
+    <div className="authPage">
+      <div className="authCard">
+        <h1 className="authTitle">Community Competition</h1>
+        <p className="authSubtitle">Track goals, log workouts, climb the leaderboard.</p>
 
         {showRegister ? (
           <>
-            <h2 style={subtitleStyle}>Create Account</h2>
+            <h2 className="h2">Create account</h2>
+            <div className="spacer" />
 
-            <form onSubmit={handleRegister}>
-              <div style={{ marginBottom: '16px' }}>
+            <form onSubmit={handleRegister} className="authForm">
                 <input
                   type="text"
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  style={inputStyle}
+                  className="input"
                   required
                 />
-              </div>
-
-              <div style={{ marginBottom: '16px' }}>
                 <input
                   type="password"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  style={inputStyle}
+                  className="input"
                   required
                 />
-              </div>
 
-              <button type="submit" style={buttonStyle}>
-                Register
+              <button type="submit" className="btn btnPrimary" style={{ width: '100%' }}>
+                Create account
               </button>
             </form>
 
-            <p style={{ marginTop: '20px', fontSize: '16px', color: '#475569' }}>
+            <p className="authFooter">
               Already have an account?
               <button
                 onClick={() => setShowRegister(false)}
-                style={toggleButtonStyle}
+                className="linkBtn"
                 type="button"
               >
                 Login
@@ -194,41 +117,37 @@ function Login({ onLoginSuccess }) {
           </>
         ) : (
           <>
-            <h2 style={subtitleStyle}>Login</h2>
+            <h2 className="h2">Login</h2>
+            <div className="spacer" />
 
-            <form onSubmit={handleLogin}>
-              <div style={{ marginBottom: '16px' }}>
+            <form onSubmit={handleLogin} className="authForm">
                 <input
                   type="text"
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  style={inputStyle}
+                  className="input"
                   required
                 />
-              </div>
-
-              <div style={{ marginBottom: '16px' }}>
                 <input
                   type="password"
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  style={inputStyle}
+                  className="input"
                   required
                 />
-              </div>
 
-              <button type="submit" style={buttonStyle}>
-                Login
+              <button type="submit" className="btn btnPrimary" style={{ width: '100%' }}>
+                Sign in
               </button>
             </form>
 
-            <p style={{ marginTop: '20px', fontSize: '16px', color: '#475569' }}>
+            <p className="authFooter">
               Don&apos;t have an account?
               <button
                 onClick={() => setShowRegister(true)}
-                style={toggleButtonStyle}
+                className="linkBtn"
                 type="button"
               >
                 Register
@@ -237,7 +156,11 @@ function Login({ onLoginSuccess }) {
           </>
         )}
 
-        {message && <div style={messageStyle}>{message}</div>}
+        {message && (
+          <div className={`alert ${message.toLowerCase().includes('error') ? 'alertDanger' : 'alertSuccess'}`}>
+            {message}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,42 +1,69 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+/* App-specific polish (auth page, small utilities) */
+
+.authPage {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.authCard {
+  width: min(440px, 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--card);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  padding: 28px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.authTitle {
+  margin: 0 0 6px;
+  font-size: 26px;
+  letter-spacing: -0.02em;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.authSubtitle {
+  margin: 0 0 18px;
+  color: var(--muted);
+  font-weight: 600;
 }
 
-.card {
-  padding: 2em;
+.authForm {
+  display: grid;
+  gap: 12px;
 }
 
-.read-the-docs {
-  color: #888;
+.authFooter {
+  margin-top: 14px;
+  color: var(--muted);
+}
+
+.linkBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 6px;
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.linkBtn:hover {
+  color: var(--primary-600);
+  text-decoration: underline;
+}
+
+.h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.spacer {
+  height: 6px;
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Login from './components/login';
 import Dashboard from './components/Dashboard';
+import './App.css';
 
 function App() {
   const [loggedInUser, setLoggedInUser] = useState(null);

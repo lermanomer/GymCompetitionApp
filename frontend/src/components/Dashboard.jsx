@@ -11,79 +11,105 @@ function Dashboard({ user, onLogout }) {
   const [currentView, setCurrentView] = useState('communities');
 
   return (
-    <div style={{padding: '20px', fontFamily: 'Arial'}}>
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '2px solid #ccc', paddingBottom: '15px'}}>
-        <h1>Community Competition App</h1>
-        <div>
-          <p style={{marginRight: '20px', display: 'inline'}}>Welcome, <strong>{user.username}</strong>!</p>
-          <button onClick={onLogout} style={{padding: '10px 20px', cursor: 'pointer', backgroundColor: 'salmon'}}>
-            Logout
-          </button>
-        </div>
-      </div>
-
-      {selectedCommunity ? (
-        <CommunityDetail
-          user={user}
-          community={selectedCommunity}
-          onBack={() => setSelectedCommunity(null)}
-        />
-      ) : (
-        <>
-          <div style={{marginBottom: '20px'}}>
-            <button
-              onClick={() => setCurrentView('communities')}
-              style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'communities' ? 'lightblue' : '#ddd'}}
-            >
-              Communities
-            </button>
-            <button
-              onClick={() => setCurrentView('profile')}
-              style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'profile' ? 'lightblue' : '#ddd'}}
-            >
-              Profile
-            </button>
-            
-            <button
-              onClick={() => setCurrentView('leaderboard')}
-              style={{marginRight: '10px', padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'leaderboard' ? 'lightblue' : '#ddd'}}
-            >
-              Leaderboard
-            </button>
-
-            {user.isAdmin && (
-              <button
-                onClick={() => setCurrentView('admin')}
-                style={{padding: '10px 20px', cursor: 'pointer', backgroundColor: currentView === 'admin' ? '#1A1A2E' : '#ddd', color: currentView === 'admin' ? 'white' : 'black'}}
-              >
-                ⚙️ Admin Panel
-              </button>
-            )}
+    <div className="container">
+      <div className="appShell">
+        <header className="topbar">
+          <div className="brand">
+            <div className="brandMark" aria-hidden="true" />
+            <div>
+              <h1 className="brandTitle">Community Competition</h1>
+              <p className="brandSub">Log activity • Set targets • Compete with friends</p>
+            </div>
           </div>
 
-          {currentView === 'communities' && (
-            <Communities user={user} onSelectCommunity={setSelectedCommunity} />
-          )}
-
-          {currentView === 'profile' && (
-            <div style={{padding: '20px', border: '1px solid #ddd', borderRadius: '5px'}}>
-              <h2>Profile</h2>
-              <p><strong>Username:</strong> {user.username}</p>
-              <p><strong>User ID:</strong> {user._id}</p>
-              <p><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</p>
-              
-              <ProfileDetails user={user} /> 
+          <div className="topbarRight">
+            <div className="chip" title="Signed in user">
+              <span className="avatar" aria-hidden="true" />
+              <span>
+                Welcome, <strong>{user.username}</strong>
+              </span>
             </div>
-          )}
-          {currentView === 'leaderboard' && (
-            <Leaderboard user={user} />
-          )}
+            <button onClick={onLogout} className="btn btnDanger">
+              Logout
+            </button>
+          </div>
+        </header>
 
-          {currentView === 'admin' && user.isAdmin && (
-            <AdminPanel />
-          )}
-        </>
-      )}
+        {selectedCommunity ? (
+          <div className="panel">
+            <div className="panelBody">
+              <CommunityDetail
+                user={user}
+                community={selectedCommunity}
+                onBack={() => setSelectedCommunity(null)}
+              />
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="panel">
+              <div className="panelHeader">
+                <div className="tabs">
+                  <button
+                    onClick={() => setCurrentView('communities')}
+                    className={`tabBtn ${currentView === 'communities' ? 'tabBtnActive' : ''}`}
+                  >
+                    Communities
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('profile')}
+                    className={`tabBtn ${currentView === 'profile' ? 'tabBtnActive' : ''}`}
+                  >
+                    Profile
+                  </button>
+                  <button
+                    onClick={() => setCurrentView('leaderboard')}
+                    className={`tabBtn ${currentView === 'leaderboard' ? 'tabBtnActive' : ''}`}
+                  >
+                    Leaderboard
+                  </button>
+                  {user.isAdmin && (
+                    <button
+                      onClick={() => setCurrentView('admin')}
+                      className={`tabBtn ${currentView === 'admin' ? 'tabBtnActive' : ''}`}
+                    >
+                      ⚙️ Admin Panel
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="panelBody">
+                {currentView === 'communities' && (
+                  <Communities user={user} onSelectCommunity={setSelectedCommunity} />
+                )}
+
+                {currentView === 'profile' && (
+                  <div>
+                    <h2 className="h2">Profile</h2>
+                    <p className="muted" style={{ marginTop: 6 }}>
+                      Manage your personal details and goals.
+                    </p>
+
+                    <div className="card" style={{ marginTop: 14 }}>
+                      <div className="cardMeta">
+                        <span><strong>Username:</strong> {user.username}</span>
+                        <span><strong>User ID:</strong> {user._id}</span>
+                        <span><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</span>
+                      </div>
+                      <ProfileDetails user={user} />
+                    </div>
+                  </div>
+                )}
+
+                {currentView === 'leaderboard' && <Leaderboard user={user} />}
+
+                {currentView === 'admin' && user.isAdmin && <AdminPanel />}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }
