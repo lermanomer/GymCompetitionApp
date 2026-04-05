@@ -6,6 +6,8 @@ function Login({ onLoginSuccess }) {
   const [message, setMessage] = useState('');
   const [showRegister, setShowRegister] = useState(false);
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -90,14 +92,30 @@ function Login({ onLoginSuccess }) {
                   className="input"
                   required
                 />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input"
-                  required
-                />
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input"
+                    style={{ width: "100%", paddingRight: "40px" }}
+                    required
+                  />
+
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer"
+                    }}
+                  >
+                    👁️‍🗨️
+                  </span>
+                </div>
 
               <button type="submit" className="btn btnPrimary" style={{ width: '100%' }}>
                 Create account
@@ -129,14 +147,31 @@ function Login({ onLoginSuccess }) {
                   className="input"
                   required
                 />
-                <input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="input"
-                  required
-                />
+        
+                <div style={{ position: "relative", width: "100%" }}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="input"
+                    style={{ width: "100%", paddingRight: "40px" }}
+                    required
+                  />
+
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer"
+                    }}
+                  >
+                    👁️‍🗨️
+                  </span>
+                </div>
 
               <button type="submit" className="btn btnPrimary" style={{ width: '100%' }}>
                 Sign in
