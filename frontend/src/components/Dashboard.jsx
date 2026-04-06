@@ -4,7 +4,7 @@ import CommunityDetail from './CommunityDetail';
 import AdminPanel from './AdminPanel';
 
 import Leaderboard from "./Leaderboard"; // new addition
-//import ProfileDetails from './ProfileDetails'; // new addition
+
 
 function Dashboard({ user, onLogout }) {
   const [selectedCommunity, setSelectedCommunity] = useState(null);
