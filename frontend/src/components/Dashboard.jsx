@@ -14,13 +14,31 @@ function Dashboard({ user, onLogout }) {
     <div className="container">
       <div className="appShell">
         <header className="topbar">
-          <div className="brand">
-            <div className="brandMark" aria-hidden="true" />
+          
+          <div className="brand" style={{ display: "flex", alignItems: "center" }}>
+            {/*LOGO*/}
+            <span style={{ fontSize: "28px", marginRight: "10px" }}>🏆</span>
+
+            {/*TITLE + SUBTEXT*/}
             <div>
-              <h1 className="brandTitle">Community Competition</h1>
-              <p className="brandSub">Log activity • Set targets • Compete with friends</p>
+              <h1 style={{
+                fontFamily: "Bebas Neue, sans-serif",
+                fontSize: "32px",
+                letterSpacing: "4px",
+                margin: 0,
+                background: "linear-gradient(to right, #00c6ff, #0072ff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent"
+              }}>
+                COMPETITOR
+              </h1>
+
+              <p className="brandSub">
+                Log activity • Set targets • Compete with friends
+              </p>
+              </div>
+
             </div>
-          </div>
 
           <div className="topbarRight">
             <div className="chip" title="Signed in user">
