@@ -4,7 +4,7 @@ import CommunityDetail from './CommunityDetail';
 import AdminPanel from './AdminPanel';
 
 import Leaderboard from "./Leaderboard"; // new addition
-import ProfileDetails from './ProfileDetails'; // new addition
+//import ProfileDetails from './ProfileDetails'; // new addition
 
 function Dashboard({ user, onLogout }) {
   const [selectedCommunity, setSelectedCommunity] = useState(null);
@@ -106,7 +106,7 @@ function Dashboard({ user, onLogout }) {
                   <div>
                     <h2 className="h2">Profile</h2>
                     <p className="muted" style={{ marginTop: 6 }}>
-                      Manage your personal details and goals.
+                      View your personal details.
                     </p>
 
                     <div className="card" style={{ marginTop: 14 }}>
@@ -114,8 +114,7 @@ function Dashboard({ user, onLogout }) {
                         <span><strong>Username:</strong> {user.username}</span>
                         <span><strong>User ID:</strong> {user._id}</span>
                         <span><strong>Admin:</strong> {user.isAdmin ? 'Yes' : 'No'}</span>
-                      </div>
-                      <ProfileDetails user={user} />
+                      </div>  
                     </div>
                   </div>
                 )}
