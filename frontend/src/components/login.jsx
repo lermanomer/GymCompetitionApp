@@ -75,19 +75,28 @@ function Login({ onLoginSuccess }) {
   return (
     <div className="authPage">
       <div className="authCard">
-        <h1 style={{
-          fontFamily: "Bebas Neue, sans-serif",
-          fontSize: "34px",
-          letterSpacing: "4px",
-          marginBottom: "5px",
-          background: "linear-gradient(to right, #00c6ff, #0072ff)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent"
-        }}>
-          COMPETITOR
-        </h1>
         
-        <p className="authSubtitle">Track goals, log workouts, climb the leaderboard.</p>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "5px" }}>
+    
+          <span style={{ fontSize: "28px", marginRight: "10px" }}>🏆</span>
+        
+          <h1 style={{
+            fontFamily: "Bebas Neue, sans-serif",
+            fontSize: "34px",
+            letterSpacing: "4px",
+            margin: 0,
+            background: "linear-gradient(to right, #00c6ff, #0072ff)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent"
+          }}>
+            COMPETITOR
+          </h1>
+
+        </div>
+
+        <p className="authSubtitle" style={{ textAlign: "center" }}>
+          Track Goals, Log Activity, Climb the Leaderboard.
+        </p>
 
         {showRegister ? (
           <>
